@@ -35,4 +35,4 @@ if r.status_code == 200:
 	print(datetime.now())
 	print("Posted on: " + URL)
 	print(json.dumps(core_temps, indent=4))
-# insignifact change
+# insignifact change on testing branch
