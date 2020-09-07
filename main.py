@@ -12,7 +12,7 @@ stdout, stderr = proc.communicate()
 
 # bytes to string
 temp_raw = stdout.decode("utf-8")
-#print(temp_raw)
+print(temp_raw)
 
 # parsing whit regex
 pattern = re.compile(r'(\w+):\s+(.\d+.\d+).C\b')
@@ -36,4 +36,4 @@ if r.status_code == 200:
 	print("Posted on: " + URL)
 	print(json.dumps(core_temps, indent=4))
 
-#insgnificat change master
+#insgnificat change master 
