@@ -27,7 +27,7 @@ class CoreTemps():
 			
 
 			# for json to print
-			print (self.__get_cores(stdout))
+			print (self.__get_cores(stdout, prettify=True))
 
 			# it's ok?
 			accept_json = input("Json template is ok? [N/y]").lower()
@@ -36,16 +36,19 @@ class CoreTemps():
 				flag = False
 			print("---------------------------")
 	
-	def get_json(self):
+	def get_json(self, prettify = False):
 		'''
 		get json
 		'''
 		proc = subprocess.Popen("sensors", stdout = subprocess.PIPE, stderr= subprocess.PIPE)
 		stdout, stderr = proc.communicate()
-		return self.__get_cores(stdout)
+		if prettify:
+			return self.__get_cores(stdout, prettify=True)
+		else:
+			return self.__get_cores(stdout)
 
 
-	def __get_cores(self, stdout):
+	def __get_cores(self, stdout, prettify=False):
 		'''
 		parser and composer
 		'''
@@ -60,7 +63,10 @@ class CoreTemps():
 		for match in matches:
 			core_temps[self.key_cores + match.group(1)] = float(match.group(2))
 		# to json for send
-		return json.dumps(core_temps, indent=4)
+		if prettify:
+			return json.dumps(core_temps, indent=4)
+		else:
+			return json.dumps(core_temps)
 
 
 

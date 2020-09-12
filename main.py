@@ -1,30 +1,14 @@
-import subprocess
-import re
-import json
+from coretemp import CoreTemps
 import requests
-from datetime import datetime
+
 
 URL = "https://httpbin.org/post"
 
-# capture sensors
-proc = subprocess.Popen("sensors", stdout = subprocess.PIPE, stderr= subprocess.PIPE)
-stdout, stderr = proc.communicate()
+ct = CoreTemps()
 
-# bytes to string
-temp_raw = stdout.decode("utf-8")
-#print(temp_raw)
-
-# parsing whit regex
-pattern = re.compile(r'(\w+):\s+(.\d+.\d+).C\b')
-matches = pattern.finditer(temp_raw)
-
-# make a dict
-core_temps = {'time': str(datetime.now())}
-for match in matches:
-	core_temps[match.group(1)] = float(match.group(2))
-	
 # to json for send
-core_temps_json = json.dumps(core_temps)
+core_temps_json = ct.get_json()
+
 # for json to print
 
 
@@ -32,7 +16,6 @@ core_temps_json = json.dumps(core_temps)
 r = requests.post(URL, json= core_temps_json)
 
 if r.status_code == 200:
-	print(datetime.now())
 	print("Posted on: " + URL)
-	print(json.dumps(core_temps, indent=4))
+	print(r.text)
 # insignifact change on testing branch
