@@ -1,5 +1,4 @@
 '''
-
 + write sensors
 + asking about vars
 + show Json
@@ -10,6 +9,10 @@ import json
 from datetime import datetime
 
 class CoreTemps():
+	"""
+	scan whit sensors
+	select json data
+	"""
 
 	def __init__(self):
 		'''
@@ -27,7 +30,7 @@ class CoreTemps():
 			
 
 			# for json to print
-			print (self.__get_cores(stdout, prettify=True))
+			print (self.get_json(stdout))
 
 			# it's ok?
 			accept_json = input("Json template is ok? [N/y]").lower()
@@ -35,20 +38,23 @@ class CoreTemps():
 			if (accept_json == "y"):
 				flag = False
 			print("---------------------------")
-	
+
+
 	def get_json(self, prettify = False):
 		'''
 		get json
 		'''
 		proc = subprocess.Popen("sensors", stdout = subprocess.PIPE, stderr= subprocess.PIPE)
 		stdout, stderr = proc.communicate()
+		payload = self.__get_cores(stdout)
+		# to json for send
 		if prettify:
-			return self.__get_cores(stdout, prettify=True)
+			return json.dumps(payload, indent=4)
 		else:
-			return self.__get_cores(stdout)
+			return json.dumps(payload)
 
 
-	def __get_cores(self, stdout, prettify=False):
+	def __get_cores(self, stdout):
 		'''
 		parser and composer
 		'''
@@ -62,12 +68,7 @@ class CoreTemps():
 		#core_temps = {}
 		for match in matches:
 			core_temps[self.key_cores + match.group(1)] = float(match.group(2))
-		# to json for send
-		if prettify:
-			return json.dumps(core_temps, indent=4)
-		else:
-			return json.dumps(core_temps)
-
+		return core_temps
 
 
 if __name__ == "__main__":
