@@ -27,7 +27,7 @@ class CoreTemps():
 			
 
 			# for json to print
-			print (self.__get_cores(stdout, prettify=True))
+			print (self.get_json(stdout))
 
 			# it's ok?
 			accept_json = input("Json template is ok? [N/y]").lower()
@@ -40,18 +40,27 @@ class CoreTemps():
 		'''
 		get json
 		'''
+		core_temps = self.__get_cores()
+		# to json for send
+		if prettify:
+			return json.dumps(core_temps, indent=4)
+		else:
+			return json.dumps(core_temps)
+
+	
+	def get_dict(self):
+		return self.__get_cores()
+		
+		
+
+
+	def __get_cores(self):
+		'''
+		compose a dict with the pattern
+		'''
 		proc = subprocess.Popen("sensors", stdout = subprocess.PIPE, stderr= subprocess.PIPE)
 		stdout, stderr = proc.communicate()
-		if prettify:
-			return self.__get_cores(stdout, prettify=True)
-		else:
-			return self.__get_cores(stdout)
 
-
-	def __get_cores(self, stdout, prettify=False):
-		'''
-		parser and composer
-		'''
 		cores_pattern = self.key_cores + r'(\w*\s*\d*):\s+(.\d+.\d+)'
 		# parsing whit regex
 		pattern = re.compile(cores_pattern)
@@ -61,12 +70,9 @@ class CoreTemps():
 		core_temps = {'time': str(datetime.now())}
 		#core_temps = {}
 		for match in matches:
-			core_temps[self.key_cores + match.group(1)] = float(match.group(2))
-		# to json for send
-		if prettify:
-			return json.dumps(core_temps, indent=4)
-		else:
-			return json.dumps(core_temps)
+			core_temps['temp'] = float(match.group(2))
+			# self.key_cores + match.group(1)
+		return core_temps
 
 
 
