@@ -3,6 +3,7 @@ import requests
 import json
 
 URL = "https://httpbin.org/post"
+#URL = "http://192.168.100.8:8000/api/"
 
 
 ct = CoreTemps()
@@ -11,7 +12,8 @@ ct = CoreTemps()
 core_temps_json = ct.get_json()
 
 # POST on server
-r = requests.post(URL, json= core_temps_json)
+r = requests.post(URL, data= json.dumps({'name':'i7'}))
+print(r.headers.get('Content-Type'))
 
 if r.status_code == 200:
 	print("Posted on: " + URL)
