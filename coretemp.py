@@ -1,8 +1,21 @@
 '''
+<<<<<<< HEAD
 + write sensors
 + asking about vars
+=======
++ Coretemps take temps from pc 
++ execute sensors
++ ask about vars
+>>>>>>> fortesting
 + show Json
 '''
+"""
+	ct = CoreTemps()
+	print(ct.get_json()) 	// for Json
+	get_dict(self)			// return python dict
+
+
+"""
 import subprocess
 import re
 import json
@@ -44,20 +57,25 @@ class CoreTemps():
 		'''
 		get json
 		'''
-		proc = subprocess.Popen("sensors", stdout = subprocess.PIPE, stderr= subprocess.PIPE)
-		stdout, stderr = proc.communicate()
-		payload = self.__get_cores(stdout)
+		core_temps = self.__get_cores()
 		# to json for send
 		if prettify:
-			return json.dumps(payload, indent=4)
+			return json.dumps(core_temps, indent=4)
 		else:
-			return json.dumps(payload)
+			return json.dumps(core_temps)
 
+	
+	def get_dict(self):
+		return self.__get_cores()
+		
+		
+	def __get_cores(self):
+		'''
+		compose a dict with the pattern
+		'''
+		proc = subprocess.Popen("sensors", stdout = subprocess.PIPE, stderr= subprocess.PIPE)
+		stdout, stderr = proc.communicate()
 
-	def __get_cores(self, stdout):
-		'''
-		parser and composer
-		'''
 		cores_pattern = self.key_cores + r'(\w*\s*\d*):\s+(.\d+.\d+)'
 		# parsing whit regex
 		pattern = re.compile(cores_pattern)
@@ -67,8 +85,10 @@ class CoreTemps():
 		core_temps = {'time': str(datetime.now())}
 		#core_temps = {}
 		for match in matches:
-			core_temps[self.key_cores + match.group(1)] = float(match.group(2))
+			core_temps['temp'] = float(match.group(2))
+			# self.key_cores + match.group(1)
 		return core_temps
+
 
 
 if __name__ == "__main__":
