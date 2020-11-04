@@ -1,9 +1,16 @@
 '''
-
-+ write sensors
-+ asking about vars
++ Coretemps take temps from pc 
++ execute sensors
++ ask about vars
 + show Json
 '''
+"""
+	ct = CoreTemps()
+	print(ct.get_json()) 	// for Json
+	get_dict(self)			// return python dict
+
+
+"""
 import subprocess
 import re
 import json
@@ -52,8 +59,6 @@ class CoreTemps():
 		return self.__get_cores()
 		
 		
-
-
 	def __get_cores(self):
 		'''
 		compose a dict with the pattern

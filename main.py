@@ -16,7 +16,7 @@ def post(seconds):
 		core_temps_json = ct.get_dict()
 		print(core_temps_json)
 		# POST on server
-		response = requests.post(URL, data= core_temps_json)
+		response = requests.post(URL, json= core_temps_json)
 		if response.ok:
 			print("Posted on: " + URL)
 			print(response.text)
